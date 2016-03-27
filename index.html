@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Test</title>
+  </head>
+  <body>
+    <p>Open the JavaScript console!</p>
+
+    <div id="parent">
+      <div><div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div id="a"></div></div></div>
+      <div id="b">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.6.1/lodash.js"></script>
+    <script src="benchmark.js"></script>
+
+    <script type="text/javascript">
+      var parent = document.getElementById('parent');
+      var a = document.getElementById('a');
+      var b = document.getElementById('b');
+
+      var suite = new Benchmark.Suite;
+
+      function lcaOld(instA, instB) {
+        var depthA = 0;
+        for (var tempA = instA; tempA; tempA = tempA.parentNode) {
+          depthA++;
+        }
+        var depthB = 0;
+        for (var tempB = instB; tempB; tempB = tempB.parentNode) {
+          depthB++;
+        }
+
+        // If A is deeper, crawl up.
+        while (depthA - depthB > 0) {
+          instA = instA.parentNode;
+          depthA--;
+        }
+
+        // If B is deeper, crawl up.
+        while (depthB - depthA > 0) {
+          instB = instB.parentNode;
+          depthB--;
+        }
+
+        // Walk in lockstep until we find a match.
+        var depth = depthA;
+        while (depth--) {
+          if (instA === instB) {
+            return instA;
+          }
+          instA = instA.parentNode;
+          instB = instB.parentNode;
+        }
+        return null;
+      }
+
+      function lcaContains(instA, instB) {
+        while (instA) {
+          if (instA.contains(instB)) {
+            return instA
+          }
+
+          instA = instA.parentNode
+        }
+
+        return null;
+      }
+
+      suite.add('Depth method', function() {
+        var lca = lcaOld(a,b)
+        if (lca !== parent) throw new Error('expected to find parent');
+      });
+
+      suite.add('Contains method', function() {
+        var lca = lcaContains(a, b)
+        if (lca !== parent) throw new Error('expected to find parent');
+      });
+
+      suite.on('cycle', function(event) {
+        console.log(String(event.target));
+      });
+
+      suite.on('complete', function() {
+        console.log('Fastest is ' + this.filter('fastest').map('name'));
+      });
+
+      suite.on('error', function(event) {
+        console.error(event.target.error)
+      });
+
+      console.log("Running benchmarks. Please wait...")
+
+      suite.run({ async: true });
+
+    </script>
+  </body>
+</html>
