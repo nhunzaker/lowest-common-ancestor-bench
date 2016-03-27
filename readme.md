@@ -3,7 +3,7 @@
 ## Setup
 
 Clone this repo and open index.html in any browser. Or visit
-http://natehunzaker.com/contains-bench and do the same.
+http://natehunzaker.com/lowest-common-ancestor-bench and do the same.
 
 ## Findings
 
