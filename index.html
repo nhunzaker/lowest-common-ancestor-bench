@@ -8,8 +8,8 @@
     <p>Open the JavaScript console!</p>
 
     <div id="parent">
-      <div><div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div id="a"></div></div></div>
-      <div id="b">
+      <div><div><div><div id="a"></div></div></div></div>
+      <div id="b"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.6.1/lodash.js"></script>
@@ -22,7 +22,7 @@
 
       var suite = new Benchmark.Suite;
 
-      function lcaOld(instA, instB) {
+      function lcaDepth(instA, instB) {
         var depthA = 0;
         for (var tempA = instA; tempA; tempA = tempA.parentNode) {
           depthA++;
@@ -69,7 +69,7 @@
       }
 
       suite.add('Depth method', function() {
-        var lca = lcaOld(a,b)
+        var lca = lcaDepth(a,b)
         if (lca !== parent) throw new Error('expected to find parent');
       });
 
